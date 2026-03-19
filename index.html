@@ -6,8 +6,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ToDo App</title>
   </head>
-  <body>
-    <div id="app"></div>
+  <body class="bg-stone-100">
+    <header class="py-4 mt-5 text-center font-thin">
+      <h1 class="front-sans text-7xl text-rose-700">~ todo ~</h1>
+    </header>
+    <nav class="flex items-center justify-center py-2 gap-3">
+      <a href="#/"
+      class="underline underline-offset-4 decoration-rose-800 decoration-2 p-1"
+      >All</a>
+      <a href="#/active">Active</a>
+      <a href="#/completed">Completed</a>
+    </nav>
+    <footer
+    class="flex flex-col justify-center items-center mt-10 text-xs text-gray-500 font-extralight"
+    >
+      <div>Click to complete a todo</div>
+      <div>Double click to edit a todo</div>
+    </footer>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
