@@ -21,6 +21,9 @@ function renderTodos(){
 
         const todoText = document.createElement("div");
         todoText.classList.add("p-4", "todo-text");
+        if(todo.completed){
+            todoText.classList.add("line-through")
+        }
         todoText.textContent = todo.text;
         todoItem.appendChild(todoText);
 
@@ -30,5 +33,27 @@ function renderTodos(){
         todoItem.appendChild(todoEdit);
     }
 }
+
+function handleNewTodoKeyDown(event){
+    const newTodoInput = event.target;
+    const todoText = newTodoInput.value.trim();
+    if(event.key === "Enter" && todoText !== ""){
+        todos.push({
+            id: nextTodoId++,
+            text: todoText,
+            completed: false
+        });
+        newTodoInput.value = "";
+        renderTodos();
+    }
+}
+
+const newTodoInput = document.getElementById("new-todo");
+
+newTodoInput.addEventListener(
+    "keydown",
+    handleNewTodoKeyDown
+);
+
 
 document.addEventListener("DOMContentLoaded", renderTodos);
