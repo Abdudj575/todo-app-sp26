@@ -89,7 +89,7 @@ function handleNewTodoKeyDown(event){
         renderTodos();
     }
 }
-
+ 
 function handleClickOnNavBar(event){
     //["#", completed]
     if(event.target.tagName === "A"){
@@ -102,7 +102,17 @@ function handleClickOnNavBar(event){
 }   
 
 function handleClickOnTodolist(event){
-    console.log(event.target.id);
+    if(event.target.id.includes("todo-text")){
+        const todoId = event.target.id.split("-").pop();
+        const todoIdNumber = Number(todoId);
+
+        for(let i = 0; i < todos.length; i++){
+            if(todos[i].id === todoIdNumber){
+                todos[i].completed = !todos[i].completed;
+            }
+        }
+    }
+    renderTodos();
 }
 
 // Event listeners
