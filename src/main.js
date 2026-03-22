@@ -15,11 +15,20 @@ const newTodoInput = document.getElementById("new-todo");
 const todoNav = document.getElementById("todo-nav");
 const todoList = document.getElementById("todo-list");
 
-const addTodo = (todoText) => [...todos, {
+const addTodo = (todos, todoText) => [...todos, {
     id: nextTodoId++,
     text: todoText,
     completed: false
 }];
+
+const toggleTodo = (todos, todoId) => {
+    todos.map(todos => todos[i].id === todoId ? 
+        {
+            ...todo,
+            completed: !todo.completed
+        }
+        : todo)
+}
 
 
 const filterTodo = (todos, filter) => {
@@ -63,63 +72,50 @@ const renderTodos = () => {
         ...filterTodo(todos, filter).map(createTodoItem)
     );
 }
-
+ 
 function renderTodoNavBar(hrefValue){
-    const todoNav = document.getElementById("todo-nav");
-    const elements = todoNav.children;
-    for(let i = 0; i < elements.length; i++){
-        const element = elements[i];
-        if(element.href === hrefValue){
-            element.classList.add(
-                "underline",
-                "underline-offset-4",
-                "decoration-rose-800",
-                "decoration-2",
-            );
-        } else{
-            element.classList.remove(
-                "underline",
-                "underline-offset-4",
-                "decoration-rose-800",
-                "decoration-2",
-            );
-        }
-    }
+    const classes = [
+        "underline",
+        "underline-offset-4",
+        "decoration-rose-800",
+        "decoration-2",
+    ];
+    Array.from(todoNav.children)
+        .forEach(element => {
+            const element = elements[i];
+            if(element.href === hrefValue){
+                element.classList.add(...classes);
+            } else{
+                element.classList.remove(...classes);
+            }
+    })
 }
 
-function handleNewTodoKeyDown(event){
+const handleNewTodoKeyDown = (event) => {
     const newTodoInput = event.target;
     const todoText = newTodoInput.value.trim();
     if(event.key === "Enter" && todoText !== ""){
-        todos = addTodo(todoText);
+        todos = addTodo(todos, todoText);
         newTodoInput.value = "";
         renderTodos();
     }
 }
  
-function handleClickOnNavBar(event){
-    //["#", completed]
+const handleClickOnNavBar = (event) => {
     if(event.target.tagName === "A"){
         const hrefValue = event.target.href;
-        const action = hrefValue.split("/").pop();
-        filter = action === "" ? "all" : action;
+        filter = hrefValue.split("/").pop() || "all";
         renderTodos();
         renderTodoNavBar(hrefValue);
     }
 }   
 
-function handleClickOnTodolist(event){
+const handleClickOnTodolist = (event) => {
     if(event.target.id.includes("todo-text")){
         const todoId = event.target.id.split("-").pop();
-        const todoIdNumber = Number(todoId);
-
-        for(let i = 0; i < todos.length; i++){
-            if(todos[i].id === todoIdNumber){
-                todos[i].completed = !todos[i].completed;
-            }
-        }
+        todos = toggleTodo(todos, Number(todoId));
+        renderTodos();
     }
-    renderTodos();
 }
 
 // Event listeners
