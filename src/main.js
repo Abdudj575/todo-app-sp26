@@ -9,6 +9,11 @@ const todos = [
 let nextTodoId = 4;
 let filter = "all"; //can be "all", "completed", or "active"
 
+// Get HTML elements
+const newTodoInput = document.getElementById("new-todo");
+const todoNav = document.getElementById("todo-nav");
+const todoList = document.getElementById("todo-list");
+
 function renderTodos(){
     const todoListElement = document.getElementById("todo-list");
     todoListElement.innerHTML = "";
@@ -25,7 +30,6 @@ function renderTodos(){
         }
     }
 
-
     for(let i = 0; i < filteredTodos.length; i++){
         const todo = filteredTodos[i];
 
@@ -34,7 +38,8 @@ function renderTodos(){
         todoListElement.appendChild(todoItem);
 
         const todoText = document.createElement("div");
-        todoText.classList.add("p-4", "todo-text");
+        todoText.classList.add("todo-text");
+        todoText.setAttribute("id", `todo-text-${todo.id}`);
         if(todo.completed){
             todoText.classList.add("line-through")
         }
@@ -96,18 +101,12 @@ function handleClickOnNavBar(event){
     }
 }   
 
-const newTodoInput = document.getElementById("new-todo");
+function handleClickOnTodolist(event){
+    console.log(event.target.id);
+}
 
-newTodoInput.addEventListener(
-    "keydown",
-    handleNewTodoKeyDown
-);
-
-const todoNav = document.getElementById("todo-nav");
-todoNav.addEventListener(
-    "click",
-    handleClickOnNavBar
-);
-
-
+// Event listeners
+newTodoInput.addEventListener( "keydown", handleNewTodoKeyDown);
+todoNav.addEventListener("click", handleClickOnNavBar);
+todoList.addEventListener("click", handleClickOnTodolist);
 document.addEventListener("DOMContentLoaded", renderTodos);
