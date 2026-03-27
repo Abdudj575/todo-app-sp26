@@ -22,7 +22,7 @@ const addTodo = (todos, todoText) => [...todos, {
 }];
 
 const toggleTodo = (todos, todoId) => {
-    todos.map(todos => todos[i].id === todoId ? 
+    return todos.map(todo => todo.id === todoId ? 
         {
             ...todo,
             completed: !todo.completed
@@ -72,24 +72,27 @@ const renderTodos = () => {
         ...filterTodo(todos, filter).map(createTodoItem)
     );
 }
+
+const updateClassList = (element, isActive) => {
+  const classes = [
+    "underline",
+    "underline-offset-4",
+    "decoration-rose-800",
+    "decoration-2",
+  ];
+  if (isActive) {
+    element.classList.add(...classes);
+  } else {
+    element.classList.remove(...classes);
+  }
+};
+
  
-function renderTodoNavBar(hrefValue){
-    const classes = [
-        "underline",
-        "underline-offset-4",
-        "decoration-rose-800",
-        "decoration-2",
-    ];
-    Array.from(todoNav.children)
-        .forEach(element => {
-            const element = elements[i];
-            if(element.href === hrefValue){
-                element.classList.add(...classes);
-            } else{
-                element.classList.remove(...classes);
-            }
-    })
-}
+const renderTodoNavBar = (href) => {
+  Array.from(todoNav.children).forEach((element) => {
+    updateClassList(element, element.href === href);
+  });
+};
 
 const handleNewTodoKeyDown = (event) => {
     const newTodoInput = event.target;
@@ -101,14 +104,14 @@ const handleNewTodoKeyDown = (event) => {
     }
 }
  
-const handleClickOnNavBar = (event) => {
-    if(event.target.tagName === "A"){
-        const hrefValue = event.target.href;
-        filter = hrefValue.split("/").pop() || "all";
-        renderTodos();
-        renderTodoNavBar(hrefValue);
-    }
-}   
+const handleClickOnNavbar = (event) => {
+  if (event.target.tagName === "A") {
+    const href = event.target.href;
+    filter = href.split("/").pop() || "all";
+    renderTodos();
+    renderTodoNavBar(href);
+  }
+}; 
 
 const handleClickOnTodolist = (event) => {
     if(event.target.id.includes("todo-text")){
@@ -120,6 +123,6 @@ const handleClickOnTodolist = (event) => {
 
 // Event listeners
 newTodoInput.addEventListener( "keydown", handleNewTodoKeyDown);
-todoNav.addEventListener("click", handleClickOnNavBar);
+todoNav.addEventListener("click", handleClickOnNavbar);
 todoList.addEventListener("click", handleClickOnTodolist);
 document.addEventListener("DOMContentLoaded", renderTodos);
