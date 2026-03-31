@@ -32,7 +32,16 @@ const createTodoApp = () => {
                     completed: !todo.completed
                 } : todo)
         },
+        markAllCompleted: () => {
+            todos = todos.map(todo => ({...todo, completed: true}))
+        },
+        clearCompleted: () =>{
+            todos = todos.filter(todo => !todo.completed)
+        },
         getTodos: () => filterTodo(),
+        getNumberOfActiveTodos: () => todos.reduce(
+            (count, todo) => count + (todo.completed ? 0 : 1), 0
+        ),
         setFilter: (newFilter) => {
             filter = newFilter;
         },
@@ -43,9 +52,11 @@ const createTodoApp = () => {
 const newTodoInput = document.getElementById("new-todo");
 const todoNav = document.getElementById("todo-nav");
 const todoList = document.getElementById("todo-list");
+const markAllCompleted = document.getElementById("mark-all-completed");
+const clearCompleted = document.getElementById("clear-completed");
+const activeTodoCount = document.getElementById("todo-count")
 
 const todoApp = createTodoApp();
-
 
 const createTodoText = (todo) =>{
     const todoText = document.createElement("div");
@@ -77,6 +88,7 @@ const renderTodos = () => {
     todoList.replaceChildren(
         ...todoApp.getTodos().map(createTodoItem)
     );
+    activeTodoCount.textContent = `${todoApp.getNumberOfActiveTodos()} items left`;
 }
 
 const updateClassList = (element, isActive) => {
@@ -126,8 +138,20 @@ const handleClickOnTodolist = (event) => {
     }
 }
 
+const handleClickOnMarkAllCompleted = () => {
+    todoApp.markAllCompleted();
+    renderTodos();
+}
+
+const handleClickOnClearCompleted = () => {
+    todoApp.clearCompleted();
+    renderTodos();
+}
+
 // Event listeners
 newTodoInput.addEventListener( "keydown", handleNewTodoKeyDown);
 todoNav.addEventListener("click", handleClickOnNavbar);
 todoList.addEventListener("click", handleClickOnTodolist);
+markAllCompleted.addEventListener("click", handleClickOnMarkAllCompleted);
+clearCompleted.addEventListener("click", handleClickOnClearCompleted);
 document.addEventListener("DOMContentLoaded", renderTodos);
