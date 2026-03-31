@@ -1,45 +1,51 @@
 import "./style.css";
 
-// State of the app
-let todos = [
-    {id: 1, text: "Buy milk", completed: false},
-    {id: 2, text: "Buy bread", completed: false},
-    {id: 3, text: "Buy jam", completed: true},
-];
-const snapshot = todos;
-let nextTodoId = 4;
-let filter = "all"; //can be "all", "completed", or "active"
+
+const createTodoApp = () => {
+    // State of the app
+    let todos = [];
+    let nextTodoId = 1;
+    let filter = "all"; //can be "all", "completed", or "active"
+
+    const filterTodo = () => {
+        if(filter === "active"){
+            return todos.filter((todo) => !todo.completed);
+        } else if(filter === "completed"){
+            return todos.filter((todo) => todo.completed);
+        } else{
+            return [...todos];
+        }
+    }
+
+    return {
+        addTodo: (todoText) => {
+            todos = [...todos, {
+            id: nextTodoId++,
+            text: todoText,
+            completed: false
+            }]
+        },
+        toggleTodo: (todoId) => {
+            todos = todos.map(todo => todo.id === todoId ? 
+                {
+                    ...todo,
+                    completed: !todo.completed
+                } : todo)
+        },
+        getTodos: () => filterTodo(),
+        setFilter: (newFilter) => {
+            filter = newFilter;
+        },
+    }
+}
 
 // Get HTML elements
 const newTodoInput = document.getElementById("new-todo");
 const todoNav = document.getElementById("todo-nav");
 const todoList = document.getElementById("todo-list");
 
-const addTodo = (todos, todoText) => [...todos, {
-    id: nextTodoId++,
-    text: todoText,
-    completed: false
-}];
+const todoApp = createTodoApp();
 
-const toggleTodo = (todos, todoId) => {
-    return todos.map(todo => todo.id === todoId ? 
-        {
-            ...todo,
-            completed: !todo.completed
-        }
-        : todo)
-}
-
-
-const filterTodo = (todos, filter) => {
-    if(filter === "active"){
-        return todos.filter((todo) => !todo.completed);
-    } else if(filter === "completed"){
-        return todos.filter((todo) => todo.completed);
-    } else{
-        return [...todos];
-    }
-}
 
 const createTodoText = (todo) =>{
     const todoText = document.createElement("div");
@@ -69,7 +75,7 @@ const createTodoItem = (todo) => {
 
 const renderTodos = () => {
     todoList.replaceChildren(
-        ...filterTodo(todos, filter).map(createTodoItem)
+        ...todoApp.getTodos().map(createTodoItem)
     );
 }
 
@@ -87,7 +93,6 @@ const updateClassList = (element, isActive) => {
   }
 };
 
- 
 const renderTodoNavBar = (href) => {
   Array.from(todoNav.children).forEach((element) => {
     updateClassList(element, element.href === href);
@@ -98,7 +103,7 @@ const handleNewTodoKeyDown = (event) => {
     const newTodoInput = event.target;
     const todoText = newTodoInput.value.trim();
     if(event.key === "Enter" && todoText !== ""){
-        todos = addTodo(todos, todoText);
+        todoApp.addTodo(todoText);
         newTodoInput.value = "";
         renderTodos();
     }
@@ -107,7 +112,7 @@ const handleNewTodoKeyDown = (event) => {
 const handleClickOnNavbar = (event) => {
   if (event.target.tagName === "A") {
     const href = event.target.href;
-    filter = href.split("/").pop() || "all";
+    todoApp.setFilter(href.split("/").pop() || "all");
     renderTodos();
     renderTodoNavBar(href);
   }
@@ -116,7 +121,7 @@ const handleClickOnNavbar = (event) => {
 const handleClickOnTodolist = (event) => {
     if(event.target.id.includes("todo-text")){
         const todoId = event.target.id.split("-").pop();
-        todos = toggleTodo(todos, Number(todoId));
+        todoApp.toggleTodo(Number(todoId));
         renderTodos();
     }
 }
