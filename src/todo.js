@@ -25,6 +25,10 @@ class Todo {
     get completed(){
         return this.#completed;
     }
+
+    set completed(value){
+        this.#completed = value;
+    }
 }
 
 export default Todo;
