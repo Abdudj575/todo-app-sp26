@@ -2,9 +2,10 @@ class Todo {
     #id;
     #text;
     #completed;
+    static #nextTodoId = 1;
 
-    constructor(id, text, completed = false){
-        this.#id = id;
+    constructor(text, completed = false){
+        this.#id = Todo.#nextTodoId++;
         this.#text = text;
         this.#completed = completed;
     }
@@ -26,9 +27,4 @@ class Todo {
     }
 }
 
-const todo = new Todo(1, "Buy milk", false);
-console.log(todo.id);
-console.log(todo.text);
-console.log(todo.completed);
-todo.toggle();
-console.log(todo.completed);
+export default Todo;
