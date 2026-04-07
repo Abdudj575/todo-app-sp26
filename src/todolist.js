@@ -14,6 +14,13 @@ class TodoList{
         }
     }
 
+    editTodo(todoId, newInput){
+        const todo = this.#todos.find(todo => todo.id === todoId)
+        if(todo){
+            todo.text = newInput;
+        }
+    }
+
     markAllCompleted(){
         this.#todos.forEach(todo => {todo.completed = true});
     }

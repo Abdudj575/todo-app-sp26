@@ -34,6 +34,7 @@ class TodoApp{
         this.#todoListElement.addEventListener("click", this.#handleClickOnTodolist);
         this.#markAllCompleted.addEventListener("click", this.#handleClickOnMarkAllCompleted);
         this.#clearCompleted.addEventListener("click", this.#handleClickOnClearCompleted);
+        this.#todoListElement.addEventListener("dblclick", this.#handleDoubleClickOnTodo);
     }
 
     #createTodoText = (todo) => {
@@ -48,8 +49,9 @@ class TodoApp{
     }
 
     #createTodoInput = (todo) =>{
-        const todoEdit = document.createElement("div");
+        const todoEdit = document.createElement("input");
         todoEdit.classList.add("hidden", "todo-edit");
+        todoEdit.setAttribute("id", `todo-edit-${todo.id}`);
         todoEdit.value = todo.text;
         return todoEdit;
     }
@@ -112,11 +114,56 @@ class TodoApp{
         }
     }; 
 
+    #clickTimer = null;
+
     #handleClickOnTodolist = (event) => {
         if(event.target.id.includes("todo-text")){
+            clearTimeout(this.#clickTimer);
             const todoId = event.target.id.split("-").pop();
-            this.#todoList.toggleTodo(Number(todoId));
-            this.renderTodos();
+            this.#clickTimer = setTimeout(() => {
+                this.#todoList.toggleTodo(Number(todoId));
+                this.renderTodos();
+            }, 200);
+        }
+    }
+
+    #handleDoubleClickOnTodo = (event) => {
+        if(event.target.id.includes("todo-text")){
+            clearTimeout(this.#clickTimer);
+            const todoId = Number(event.target.id.split("-").pop());
+            const todoTextEl = event.target;
+            const todoEditEl = document.getElementById(`todo-edit-${todoId}`);
+
+            todoTextEl.classList.add("hidden");
+            todoEditEl.classList.remove("hidden");
+            todoEditEl.focus();
+            todoEditEl.select();
+
+            const saveEdit = () => {
+                const newText = todoEditEl.value.trim();
+                if(newText !== ""){
+                    this.#todoList.editTodo(todoId, newText);
+                }
+                this.renderTodos();
+            };
+
+            const onKeyDown = (e) => {
+                if(e.key === "Enter"){
+                    todoEditEl.removeEventListener("blur", onBlur);
+                    saveEdit();
+                } else if(e.key === "Escape"){
+                    todoEditEl.removeEventListener("blur", onBlur);
+                    this.renderTodos();
+                }
+            };
+
+            const onBlur = () => {
+                todoEditEl.removeEventListener("keydown", onKeyDown);
+                saveEdit();
+            };
+
+            todoEditEl.addEventListener("keydown", onKeyDown);
+            todoEditEl.addEventListener("blur", onBlur);
         }
     }
 

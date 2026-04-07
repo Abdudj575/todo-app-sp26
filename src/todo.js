@@ -22,6 +22,10 @@ class Todo {
         return this.#text;
     }
 
+    set text(value){
+        this.#text = value;
+    }
+
     get completed(){
         return this.#completed;
     }
